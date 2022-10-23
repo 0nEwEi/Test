@@ -1,4 +1,6 @@
-# Discriminator and Generator implementation for DCGAN
+'''
+Discriminator and Generator implementation for DCGAN
+'''
 
 import torch
 import torch.nn as nn
@@ -20,7 +22,7 @@ class Discriminator(nn.Module):
     def _block(self, in_channels, out_channels, kernel_size, stride, padding):
         return nn.Sequential(
             nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding, bias=False),
-            nn.BatchNorm2d(out_channels), # BN is the reason for Conv2d(bias=False)
+            nn.BatchNorm2d(out_channels), # BN is the reason for bias=False
             nn.LeakyReLU(0.2),
         )
     
@@ -47,7 +49,26 @@ class Generator(nn.Module):
             nn.ReLU(),
         )
     
-def weights_init(model):
-    for m in model.modules():
-        if isinstance(m, (nn.Conv2d, nn.ConvTranspose2d, nn.BatchNorm2d)):
-            nn.init.normal_(m.weight.data, 0.0, 0.02)
+    def forward(self, x):
+        return self.gen(x)
+    
+def weights_init(m):
+    classname = m.__class__.__name__
+    if classname.find('Conv') != -1:
+        torch.nn.init.normal_(m.weight, 0.0, 0.02)
+    elif classname.find('BatchNorm') != -1:
+        torch.nn.init.normal_(m.weight, 1.0, 0.02)
+        torch.nn.init.zeros_(m.bias)
+
+if __name__ == "__main__":
+    N, in_channels, H, W = 8, 3, 64, 64
+    z_dim = 100
+    x = torch.randn((N, in_channels, H, W))
+    disc = Discriminator(in_channels, 8)
+    weights_init(disc)
+    assert disc(x).shape == (N, 1, 1, 1)
+    gen = Generator(z_dim, in_channels, 8)
+    weights_init(gen)
+    z = torch.randn((N, z_dim, 1, 1))
+    assert gen(z).shape == (N, in_channels, H, W)
+    print("Success")
