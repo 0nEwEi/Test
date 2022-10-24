@@ -64,14 +64,21 @@ for epoch in range(NUM_EPOCHS):
         # Train Discriminator--max log(D(x)) + log(1 - D(G(z)))
         disc_real = disc(real).reshape(-1) # N x 1 x 1 x 1 to 1 x N
         loss_disc_real = criterion(disc_real, torch.ones_like(disc_real))
-        disc_fake = disc(fake.detach()).reshape(-1) # use detach to reuse fake in Generator training
+        # see detach() and clone() in https://blog.csdn.net/qq_37692302/article/details/107459525
+        '''
+        RuntimeError: Trying to backward through the graph a second time 
+        (or directly access saved tensors after they have already been freed). 
+        Saved intermediate values of the graph are freed when you call .backward() or autograd.grad(). 
+        Specify retain_graph=True if you need to backward through the graph a second time or 
+        if you need to access saved tensors after calling backward.
+        '''
+        disc_fake = disc(fake.detach()).reshape(-1) # use detach (if not, see RuntimeError(line 89) above)
         loss_disc_fake = criterion(disc_fake, torch.zeros_like(disc_fake))
 
         loss_disc = (loss_disc_real + loss_disc_fake) / 2
 
         disc.zero_grad()
         loss_disc.backward()
-        # loss_disc.backward(retain_graph=True) # or keep the computing graph to reuse fake
         opt_disc.step()
 
         # Train Generator--min log(1 - D(G(z))) <-> max D(G(z))
@@ -94,8 +101,8 @@ for epoch in range(NUM_EPOCHS):
                 img_grid_real = torchvision.utils.make_grid(real[:32], normalize=True)
                 img_grid_fake = torchvision.utils.make_grid(fake[:32], normalize=True)
 
-                writer_real.add_image("Real_celeb_dcgan", img_grid_real, global_step=step)
-                writer_fake.add_image("Fake_celeb_dcgan", img_grid_fake, global_step=step)
+                writer_real.add_image("Real_celeb_dcganssss", img_grid_real, global_step=step)
+                writer_fake.add_image("Fake_celeb_dcganssss", img_grid_fake, global_step=step)
             
             step += 1
 
