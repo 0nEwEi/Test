@@ -16,7 +16,7 @@ from model import Discriminator, Generator, weights_init
 # Hyperparameters etc. (essential for DCGAN)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 LEARNING_RATE = 2e-4
-BATCH_SIZE = 128
+BATCH_SIZE = 64
 IMAGE_SIZE = 64
 IMG_CHANNELS = 3
 Z_DIM = 100
