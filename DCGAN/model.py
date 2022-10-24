@@ -39,7 +39,7 @@ class Generator(nn.Module):
             self._block(features_g*8, features_g*4, 4, 2, 1), # 16 x 16
             self._block(features_g*4, features_g*2, 4, 2, 1), # 32 x 32
             nn.ConvTranspose2d(features_g*2, img_channels, kernel_size=4, stride=2, padding=1), # 64 x 64
-            nn.Tanh() # normalized to [-1, 1]
+            nn.Tanh() # normalized to [-1, 1] (actually [0, 1])
         )
     
     def _block(self, in_channels, out_channels, kernel_size, stride, padding):
@@ -60,6 +60,7 @@ def weights_init(m):
         torch.nn.init.normal_(m.weight, 1.0, 0.02)
         torch.nn.init.zeros_(m.bias)
 
+# test
 if __name__ == "__main__":
     N, in_channels, H, W = 8, 3, 64, 64
     z_dim = 100

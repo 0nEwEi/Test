@@ -13,7 +13,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 from model import Discriminator, Generator, weights_init
 
-# Hyperparameters etc.
+# Hyperparameters etc. (essential for DCGAN)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 LEARNING_RATE = 2e-4
 BATCH_SIZE = 128
@@ -85,7 +85,7 @@ for epoch in range(NUM_EPOCHS):
         # print to tensorboard
         if batch_idx % 100 == 0:
             print(f"Epoch [{epoch}/{NUM_EPOCHS}] Batch {batch_idx}/{len(dataloader)} \
-                        Loss D: {loss_disc:.4f}, loss G: {loss_gen:.4f}")
+                        Loss D: {loss_disc:.4f}, loss G: {loss_gen:.4f}") # loss here is meaningless
 
             with torch.no_grad():
                 fake = gen(fixed_noise)
@@ -94,8 +94,8 @@ for epoch in range(NUM_EPOCHS):
                 img_grid_real = torchvision.utils.make_grid(real[:32], normalize=True)
                 img_grid_fake = torchvision.utils.make_grid(fake[:32], normalize=True)
 
-                writer_real.add_image("Real_celeb", img_grid_real, global_step=step)
-                writer_fake.add_image("Fake_celeb", img_grid_fake, global_step=step)
+                writer_real.add_image("Real_celeb_dcgan", img_grid_real, global_step=step)
+                writer_fake.add_image("Fake_celeb_dcgan", img_grid_fake, global_step=step)
             
             step += 1
 
