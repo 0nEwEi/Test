@@ -101,8 +101,8 @@ for epoch in range(NUM_EPOCHS):
                 img_grid_real = torchvision.utils.make_grid(real[:32], normalize=True)
                 img_grid_fake = torchvision.utils.make_grid(fake[:32], normalize=True)
 
-                writer_real.add_image("Real_celeb_dcganssss", img_grid_real, global_step=step)
-                writer_fake.add_image("Fake_celeb_dcganssss", img_grid_fake, global_step=step)
+                writer_real.add_image("Real_celeb_dcgan", img_grid_real, global_step=step)
+                writer_fake.add_image("Fake_celeb_dcgan", img_grid_fake, global_step=step)
             
             step += 1
 
