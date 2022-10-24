@@ -1,2 +1,3 @@
 # Test
 DCGAN
+WGANGP

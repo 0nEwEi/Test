@@ -36,7 +36,7 @@ transforms = transforms.Compose([
 
 # dataset = datasets.MNIST(root="D:/PyProjects/Datasets/mnist", train=True, transform=transforms, download=False) # IMG_CHANNELS=1
 dataset = datasets.ImageFolder(root="D:/PyProjects/Datasets/celeb_dataset", transform=transforms) # IMG_CHANNELS=3
-dataloader = DataLoader(dataset=dataset, batch_size=BATCH_SIZE, shuffle=True)
+dataloader = DataLoader(dataset=dataset, batch_size=BATCH_SIZE, shuffle=True, drop_last=True) # the last batch will cause error in gradient_penalty
 
 gen = Generator(Z_DIM, IMG_CHANNELS, FEATURES_G).to(device)
 critic = Discriminator(IMG_CHANNELS, FEATURES_D).to(device)
@@ -63,7 +63,7 @@ for epoch in range(NUM_EPOCHS):
         # Train Discriminator
         for _ in range(CRITIC_ITERATIONS):
             noise = torch.randn((BATCH_SIZE, Z_DIM, 1, 1)).to(device)
-            fake = gen(noise)
+            fake = gen(noise).detach() # fake here doesn't need gradient
             
             critic_real = critic(real).reshape(-1)
             critic_fake = critic(fake).reshape(-1)
@@ -74,11 +74,15 @@ for epoch in range(NUM_EPOCHS):
             loss_critic = (-(torch.mean(critic_real) - torch.mean(critic_fake)) + LAMBDA_GP*gp)
             
             critic.zero_grad()
-            loss_critic.backward(retain_graph=True) # keep the computing graph to reuse fake
+            loss_critic.backward()
+            # loss_critic.backward(retain_graph=True) # use this to reuse fake in Generator training
             opt_critic.step()
 
         # Train Generator--min -E[critic(gen(z))]
+        noise = torch.randn((BATCH_SIZE, Z_DIM, 1, 1)).to(device)
+        fake = gen(noise)
         output = critic(fake).reshape(-1)
+
         loss_gen = -torch.mean(output)
 
         gen.zero_grad()
