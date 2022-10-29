@@ -1,3 +1,4 @@
 DCGAN/logs
 WGANGP/logs
 pix2pix/checkpoints
+*/__pycache__
