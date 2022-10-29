@@ -1,3 +1,4 @@
 # Test
-DCGAN
-WGANGP
+DCGAN  
+WGANGP  
+pix2pix
