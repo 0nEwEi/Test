@@ -6,7 +6,7 @@ class CNNBlock(nn.Module):
         super().__init__()
         self.conv = nn.Sequential(
             nn.Conv2d(in_channels, out_channels, 4, stride, padding=1 ,bias=False, padding_mode="reflect"),
-            nn.BatchNorm2d(out_channels), # bias=False
+            nn.InstanceNorm2d(out_channels, affine=True), # bias=False
             nn.LeakyReLU(0.2),
         )
 
