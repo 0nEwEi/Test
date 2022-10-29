@@ -5,6 +5,7 @@ TRAIN_DIR = "D:/PyProjects/Datasets/archive/maps/maps/train"
 VAL_DIR = "D:/PyProjects/Datasets/archive/maps/maps/val"
 CHECKPOINTS_DIR = "./checkpoints"
 EXAMPLES_DIR = "./examples"
+
 LEARNING_RATE = 2e-4
 BATCH_SIZE = 16
 NUM_WORKERS = 4 # you just cann't use 8, why?
